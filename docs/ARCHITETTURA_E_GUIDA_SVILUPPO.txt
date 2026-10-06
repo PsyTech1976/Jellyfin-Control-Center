@@ -1,0 +1,136 @@
+====================================================================================================
+               JELLYFIN CONTROL CENTER - ARCHITETTURA E GUIDA ALLO SVILUPPO
+====================================================================================================
+Versione Applicazione: 2.3.0
+Linguaggio: Python 3.10+ (supporta Python 3.14)
+Framework Grafico: PyQt6 (Qt 6.4+)
+Architettura Target: Linux x86_64
+Licenza: Open Source / Personale
+Crediti: Ideato da PsyTech76 • Sviluppato con IA (DeepMind Antigravity) & PyQt6
+====================================================================================================
+
+1. PANORAMICA DEL PROGETTO
+----------------------------------------------------------------------------------------------------
+Jellyfin Control Center è una suite di gestione avanzata a impatto zero, monitoraggio risorse hardware,
+controllo sessioni di streaming, installazione guidata multi-distribuzione, backup/ripristino e gestione
+plugin specializzati (Intro Skipper e Trickplay) per Jellyfin Media Server in container Docker con
+accelerazione hardware GPU (NVENC/NVDEC/VAAPI).
+
+L'applicazione garantisce l'esecuzione a istanza singola (Single Instance) a runtime, dispone di
+interfaccia e guida completa in formato HTML localizzate in 5 lingue (Italiano, Inglese, Francese,
+Tedesco, Spagnolo), adotta un'architettura multithreading asincrona su pattern QThread ed include
+l'integrazione con un clic nel menu di sistema XDG e nella barra delle applicazioni / dock.
+
+
+2. STRUTTURA DELLE CARTELLE DEL PROGETTO
+----------------------------------------------------------------------------------------------------
+Jellyfin_Control_Center_Project/
+├── desktop/
+│   └── Jellyfin Control Center.desktop   # Lanciatore desktop standard XDG
+├── dist/
+│   └── Jellyfin_Control_Center-x86_64.AppImage # Pacchetto autonomo compilato pronto all'uso
+├── docker/
+│   └── docker-compose.yml                # Configurazione Docker Compose con passthrough GPU
+├── docs/
+│   ├── ARCHITETTURA_E_GUIDA_SVILUPPO.txt # Questo documento: specifiche tecniche e architettura
+│   ├── NOTE_PER_LA_IA.txt                # Note critiche e linee guida per futuri modelli di IA
+│   ├── GUIDA_RAPIDA.txt                  # Istruzioni operative rapide per utenti e sviluppatori
+│   └── CHANGELOG.txt                     # Storico dettagliato delle modifiche e release
+├── icons/
+│   ├── jellyfin-control.png              # Icona applicazione PNG 256x256
+│   ├── jellyfin-control.svg              # Icona applicazione vettoriale SVG
+│   └── jellyfin.svg                      # Logo Jellyfin originale
+├── requirements.txt                      # Dipendenze Python (PyQt6, psutil)
+├── scripts/
+│   └── build_appimage.sh                 # Script bash automatizzato per la compilazione AppImage
+└── src/
+    ├── jellyfin_manager.py               # Codice sorgente principale dell'applicazione
+    └── translations.py                   # Modulo di localizzazione i18n e guida HTML multilingua
+
+
+3. GESTIONE A ISTANZA SINGOLA (SINGLE INSTANCE)
+----------------------------------------------------------------------------------------------------
+Nel file `src/jellyfin_manager.py`:
+- Viene utilizzato `QLocalSocket` per tentare la connessione a `jellyfin_control_center_single_instance_socket`.
+- Se la connessione ha successo entro 500ms:
+  * Viene inviato il messaggio `ACTIVATE\n`.
+  * Il processo client termina immediatamente con codice 0.
+- L'istanza principale in esecuzione ascolta tramite `QLocalServer`. All'arrivo della connessione:
+  * Invoca `showNormal()`, `raise_()` e `activateWindow()` portando la finestra in primo piano.
+- Se l'istanza precedente è terminata in modo anomalo (crash), `QLocalServer.removeServer()` rimuove
+  automaticamente il descrittore socket orfano dal filesystem Linux prima di creare il nuovo server.
+
+
+4. INTEGRAZIONE DI SISTEMA DESKTOP (XDG DESKTOP INTEGRATION)
+----------------------------------------------------------------------------------------------------
+- Metodi `update_system_integration_button()` e `toggle_system_integration()` in `JellyfinManager`:
+  * Rileva lo stato di installazione verificando l'esistenza di:
+    `~/.local/share/applications/jellyfin-control-center.desktop`.
+  * All'abilitazione:
+    1. Installa l'icona in `~/.local/share/icons/hicolor/256x256/apps/` e `~/.local/share/icons/`.
+    2. Determina il percorso eseguibile (variabile d'ambiente `$APPIMAGE` se eseguito da AppImage,
+       oppure interprete Python e percorso script).
+    3. Scrive il file `.desktop` specificando `StartupWMClass=jellyfin-control-center`.
+    4. Invoca `update-desktop-database ~/.local/share/applications/` rendendo l'app immediatamente
+       indicizzata e reperibile in launcher desktop (KDE KRunner, GNOME Shell, Rofi, ecc.)
+       e pronta per essere aggiunta alla barra delle applicazioni o al dock.
+  * Alla disabilitazione: rimuove il file `.desktop` e aggiorna il database.
+  * In `main()` vengono definiti:
+    `app.setApplicationName("jellyfin-control-center")` e
+    `app.setDesktopFileName("jellyfin-control-center")` per garantire l'associazione univoca della
+    finestra con l'icona sul dock/taskbar sia su Wayland che su X11.
+
+
+5. ARCHITETTURA UNIVERSALE MULTI-UTENTE
+----------------------------------------------------------------------------------------------------
+- Nessun percorso o utente è cablato nel codice sorgente.
+- Risoluzione dinamica della home directory con `os.path.expanduser("~")`.
+- Riconoscimento dinamico dell'utente attivo via `getpass.getuser()` e `$USER`.
+- Template `docker/docker-compose.yml` pulito e indipendente per qualsiasi architettura storage.
+
+
+6. LOCALIZZAZIONE (i18n) E GUIDA HTML
+----------------------------------------------------------------------------------------------------
+- Il modulo `src/translations.py` fornisce:
+  * `SUPPORTED_LANGUAGES`: Dizionario con codici e nomi delle 5 lingue.
+  * `t(key, lang)`: Risoluzione dinamica delle stringhe con fallback sicuro in inglese.
+  * `get_about_info_html(lang)`: Crediti (PsyTech76, IA, Qt6) formattati in HTML styled.
+  * `get_user_guide_html(lang)`: Manuale completo dell'applicazione formattato in HTML styled.
+- Rilevamento automatico all'avvio tramite `QLocale.system().name()` o variabile d'ambiente `LANG`.
+- Selettore runtime `QComboBox` nella barra superiore che aggiorna istantaneamente sia i testi
+  dell'interfaccia con `retranslate_ui()` sia le finestre di dialogo.
+
+
+7. ARCHITETTURA DELLA SEZIONE PLUGIN (INTRO SKIPPER & TRICKPLAY)
+----------------------------------------------------------------------------------------------------
+La scheda Plugin è organizzata in un `QTabWidget` interno con due sottoschede:
+
+A. Intro Skipper (🎵 Intro Skipper):
+   - Supporto ad installazione online da GitHub o da archivio `.zip` locale.
+   - Rimozione guidata con opzione per mantenere o purgare `introskipper-v2.db`.
+   - Controllo dell'attività di analisi (`IntroSkipperDetectSegmentsTask`) via API REST.
+   - Statistiche real-time lette da SQLite in sola lettura e parsing del log.
+
+B. Trickplay (🖼️ Trickplay):
+   - Verifica preventiva: controllo in `config/plugins/` e presenza task schedulato prima di installare.
+   - Monitoraggio task: monitora `RefreshTrickplayImages` (`64f5f44cd30dc273cb9890205473bbcc`).
+   - Start / Stop: comandi REST via POST / DELETE su `/ScheduledTasks/Running/{id}`.
+   - Reset & Ricostruzione Libreria:
+     * Arresta il task.
+     * Cancella i file e cartelle in `config/data/trickplay/`.
+     * Azzera la tabella `TrickplayInfos` in `jellyfin.db`.
+     * Riavvia il task per generare da zero le nuove miniature per tutti i media.
+   - Statistiche in tempo reale:
+     * Miniature generate (`SELECT count(*) FROM TrickplayInfos`).
+     * Totale media e rimanenti (`SELECT count(*) FROM BaseItems`).
+     * Dimensione occupata su disco dalla cartella `trickplay/`.
+   - Log live: parsing in tempo reale degli eventi con tag `[TRICKPLAY]`.
+
+
+8. PRINCIPIO DI IMPATTO ZERO
+----------------------------------------------------------------------------------------------------
+- Il monitoraggio hardware (`hw_timer`) opera SOLO quando la scheda 2 è visualizzata e attiva.
+- Il monitoraggio dei plugin (`plugin_timer`) opera SOLO quando la scheda 5 è visualizzata.
+- Tutti gli accessi ai database SQLite (`jellyfin.db`, `introskipper-v2.db`) avvengono tramite URI in
+  sola lettura (`file:{path}?mode=ro`) con timeout di 1.5s per evitare qualsiasi contesa con il server.
+====================================================================================================

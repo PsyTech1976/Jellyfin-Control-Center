@@ -1,0 +1,33 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "1000:1000"
+    restart: "no"
+    network_mode: "host"
+    devices:
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidiactl:/dev/nvidiactl
+      - /dev/nvidia-uvm:/dev/nvidia-uvm
+      - /dev/nvidia-modeset:/dev/nvidia-modeset
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      # Librerie NVIDIA per accelerazione hardware NVENC / CUDA / NVDEC
+      - /usr/lib/libcuda.so.1:/usr/lib/x86_64-linux-gnu/libcuda.so.1:ro
+      - /usr/lib/libnvcuvid.so.1:/usr/lib/x86_64-linux-gnu/libnvcuvid.so.1:ro
+      - /usr/lib/libnvidia-encode.so.1:/usr/lib/x86_64-linux-gnu/libnvidia-encode.so.1:ro
+      - /usr/lib/libnvidia-ptxjitcompiler.so.1:/usr/lib/x86_64-linux-gnu/libnvidia-ptxjitcompiler.so.1:ro
+      - /usr/lib/libnvidia-opencl.so.1:/usr/lib/x86_64-linux-gnu/libnvidia-opencl.so.1:ro
+      # Cartelle multimediali di esempio (modifica con i tuoi percorsi)
+      - ${HOME:-~}/Video:/media/video
+      - ${HOME:-~}/Musica:/media/musica
+      - ./media:/media/extra
+      # Esempi di montaggio dischi o cartelle esterne:
+      # - /run/media/${USER}/Discocontenuti:/media/Discocontenuti
+      # - /mnt/storage/Film:/media/film
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://localhost:8096
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all

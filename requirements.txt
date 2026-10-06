@@ -1,0 +1,3 @@
+# Dipendenze Python per Jellyfin Control Center
+PyQt6>=6.4.0
+psutil>=5.9.0

@@ -1,0 +1,98 @@
+====================================================================================================
+                        STORICO DELLE VERSIONI E MODIFICHE (CHANGELOG)
+                                   Jellyfin Control Center
+====================================================================================================
+
+[Versione 2.3.0] - 2026-10-06
+----------------------------------------------------------------------------------------------------
+- INTEGRAZIONE DI SISTEMA CON UN CLIC (XDG DESKTOP & TASKBAR):
+  * Aggiunto pulsante toggle "📌 Aggiungi al Menu di Sistema" / "🗑️ Rimuovi dal Menu di Sistema".
+  * Registrazione automatica del lanciatore .desktop e icone in ~/.local/share/applications/ e ~/.local/share/icons/.
+  * Rende l'applicazione immediatamente reperibile nella ricerca app del desktop (KRunner, GNOME, Kickoff, ecc.)
+    e pronta per essere fissata alla barra delle applicazioni o al dock.
+  * Aggiornamento dinamico del database desktop di sistema (update-desktop-database).
+  * Integrazione completa con traduzione nelle 5 lingue supportate (IT, EN, FR, DE, ES).
+
+- ARCHITETTURA UNIVERSALE MULTI-UTENTE:
+  * Codice completamente indipendente da specifici utenti o percorsi locali.
+  * Risoluzione dinamica della home directory (~) e dell'ambiente utente.
+  * Configurazione docker-compose.yml generica ed espandibile per qualsiasi libreria multimediale.
+
+
+[Versione 2.2.0] - 2026-10-06
+----------------------------------------------------------------------------------------------------
+- SISTEMA A ISTANZA SINGOLA A RUNTIME:
+  * Implementato socket server locale (QLocalServer/QLocalSocket) con identificatore univoco.
+  * In caso di avvio concorrente di una seconda istanza, il nuovo processo invia un segnale di
+    risveglio ("ACTIVATE"), porta la finestra principale esistente in primo piano (showNormal, raise,
+    activateWindow) ed esce immediatamente e pulitamente (exit code 0).
+  * Gestione automatica della pulizia di eventuali socket obsoleti rimasti in caso di crash improvviso.
+
+- GESTIONE PLUGIN TRICKPLAY (MINIATURE DI SCORRIMENTO & SCRUBBING):
+  * Nuova sottoscheda dedicata "🖼️ Trickplay" all'interno della scheda Plugin.
+  * Verifica preventiva: prima di ogni operazione di installazione controlla se il modulo o task
+    di Trickplay e gia attivo e configurato nel server Jellyfin, avvisando l'utente.
+  * Supporto all'installazione automatica o da archivio locale .zip.
+  * Monitoraggio in tempo reale dell'attivita del generatore di miniature (In esecuzione / Inattivo).
+  * Pulsanti di avvio e arresto manuale dell'analisi (Start / Stop collegati a RefreshTrickplayImages).
+  * Funzione "Reset e Ricostruzione Libreria": dialogo di conferma protetto, cancellazione dei dati
+    in config/data/trickplay/, azzeramento record nel database Jellyfin e riavvio della generazione pulita.
+  * Pulsante dedicato per apertura del pannello di configurazione Trickplay nel browser.
+  * Telemetria real-time: media con miniature generate, totale media, rimanenti e dimensione disco (MB).
+  * Log live in tempo reale per monitorare gli eventi specifici di Trickplay.
+
+- PRESERVAZIONE INTEGRALE DEL PLUGIN INTRO SKIPPER:
+  * Mantenute al 100% tutte le funzioni di Intro Skipper all'interno della sottoscheda "🎵 Intro Skipper".
+
+- LOCALIZZAZIONE COMPLETA (i18n) A 5 LINGUE:
+  * Supporto nativo per: Italiano (it), English (en), Français (fr), Deutsch (de), Español (es).
+  * Rilevamento automatico della lingua di sistema dell'utente all'avvio con fallback in Inglese.
+  * Selettore dinamico della lingua nella barra superiore per cambiare lingua istantaneamente.
+  * Traduzione integrale sia dell'interfaccia utente che dei dialoghi e della guida.
+
+- SEZIONE INFORMAZIONI SUL PROGRAMMA:
+  * Dialogo modale "ℹ️ Info" che specifica:
+    - Sviluppato con Intelligenza Artificiale (DeepMind Antigravity) e framework PyQt6 (Qt 6.4+).
+    - Ideato e progettato da PsyTech76.
+    - Note di licenza open-source e distribuzione standalone Linux x86_64.
+
+- GUIDA COMPLETA IN FORMATO HTML:
+  * Finestra separata dedicata "📖 Guida" con visualizzatore HTML styled (QTextBrowser).
+  * Spiegazione approfondita di tutte le sezioni, comandi, schede, indicatori e pulsanti dell'applicazione.
+  * Manuale interamente localizzato nelle 5 lingue supportate.
+
+
+[Versione 2.1.0] - 2026-10-05
+----------------------------------------------------------------------------------------------------
+- NUOVA SEZIONE: GESTIONE PLUGIN (INTRO SKIPPER):
+  * Aggiunta la scheda "🔌 Plugin" dedicata al rilevamento e salto automatico delle sigle (intro),
+    titoli di coda (credits) e riassunti (recap).
+  * Download automatico da GitHub o caricamento da file .zip locale.
+  * Rimozione guidata con opzione per conservare il database delle impronte.
+  * Avvio e arresto analisi media via API REST.
+  * Statistiche e conteggi real-time su media processati, rimanenti e segmenti trovati.
+  * Log live in tempo reale con data, ora precisa ed auto-scroll.
+
+
+[Versione 2.0.0] - 2026-10-04
+----------------------------------------------------------------------------------------------------
+- NUOVA SEZIONE: GESTIONE INSTALLAZIONE MULTI-DISTRO:
+  * Riconoscimento automatico della distribuzione host (Arch, Debian, Ubuntu, Fedora, openSUSE).
+  * Dialogo password root/sudo protetto e installazione automatica Docker e GPU toolkit.
+  * Disinstallazione atomica pulita a specchio con opzione di rimozione sicura dei dati utente.
+
+- NUOVA SEZIONE: BACKUP & RIPRISTINO COMPRESSO (.zip):
+  * Creazione snapshot completi compressi di configurazioni, database e librerie utente.
+  * Opzione rapida (esclusione metadati pesanti in soli 2 secondi) vs backup integrale.
+  * Monitoraggio streaming con barra avanzamento, velocità (MB/s) ed ETA.
+  * Ripristino con de-compressione atomica e riavvio automatico del servizio.
+  * Protezione e pulizia immediata a zero residui in caso di annullamento da parte dell'utente.
+
+
+[Versione 1.5.0] - 2026-10-03
+----------------------------------------------------------------------------------------------------
+- MONITORAGGIO HARDWARE A ZERO IMPATTO (ON-DEMAND):
+  * Grafici e telemetria in tempo reale di CPU, RAM e GPU.
+  * Attivazione solo su richiesta quando la scheda è visualizzata, zero consumo in background.
+  * Rilevamento sessioni attive e transcodifica in tempo reale.
+====================================================================================================

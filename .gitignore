@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# CachyOS / Arch / Linux temporary files
+*~
+*.swp
+*.bak
+.directory
+.DS_Store
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Build and Packaging temporary artifacts
+build_tmp/
+*.spec
+
+# Exclude standalone distribution AppImage binaries from git repo
+# (Note: Releases are published via GitHub Releases)
+dist/*.AppImage

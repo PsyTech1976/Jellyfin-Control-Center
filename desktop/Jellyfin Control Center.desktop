@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Jellyfin Control Center
+GenericName=Gestore Jellyfin
+Comment=Gestione, Monitoraggio Risorse, Installazione e Backup di Jellyfin Media Server
+Exec=jellyfin-manager
+Icon=jellyfin-control
+Terminal=false
+Categories=AudioVideo;Video;Network;Settings;
+StartupNotify=true

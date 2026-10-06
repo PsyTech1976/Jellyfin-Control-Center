@@ -1,0 +1,61 @@
+====================================================================================================
+               NOTE E LINEE GUIDA PER MODELLI DI INTELLIGENZA ARTIFICIALE (IA)
+====================================================================================================
+Destinatario: Qualsiasi agente IA (Antigravity, Claude, GPT, o modelli futuri) che interagisca
+              con questo repository per manutenzione, refactoring o aggiunta di feature.
+====================================================================================================
+
+Gentile IA, rispetta scrupolosamente i seguenti vincoli architetturali e storici:
+
+1. SINGOLA ISTANZA (SINGLE INSTANCE) A RUNTIME
+   - L'applicazione implementa un server locale IPC `QLocalServer` (`SINGLE_INSTANCE_SOCKET_NAME = "jellyfin_control_center_single_instance_socket"`).
+   - In `main()`, prima di creare la finestra, tenta di connettersi via `QLocalSocket`. Se la connessione
+     ha successo, invia `ACTIVATE\n` e termina il processo.
+   - NON rimuovere o bypassare questo meccanismo: previene istanze multiple che potrebbero creare
+     interferenze concorrenti sui container Docker o sui database SQLite.
+   - Ricordati sempre di invocare `QLocalServer.removeServer(...)` prima di `listen()`, per pulire
+     eventuali socket file lasciati da un arresto anomalo del sistema su Linux.
+
+2. UNIVERSALITÀ MULTI-UTENTE E ZERO PERCORSI HARDCODED
+   - Non inserire MAI percorsi assoluti con nomi utente locali (es. `/home/nomeutente/`).
+   - Usa sempre `os.path.expanduser("~")`, `Path.home()` o variabili d'ambiente (`$HOME`, `$USER`).
+   - Mantieni il codice universale per qualsiasi utente o distribuzione Linux.
+
+3. INTEGRAZIONE DI SISTEMA (XDG DESKTOP & TASKBAR)
+   - L'applicazione include la funzione di integrazione nel menu di sistema XDG (`~/.local/share/applications/`).
+   - Assicurati che `app.setApplicationName("jellyfin-control-center")` e `app.setDesktopFileName("jellyfin-control-center")`
+     rimangano impostati in `main()` per garantire la corretta associazione con la taskbar/dock su Wayland e X11.
+
+4. LOCALIZZAZIONE (i18n) E GUIDA HTML
+   - Tutte le stringhe dell'interfaccia e la guida HTML sono centralizzate in `src/translations.py`.
+   - Se aggiungi pulsanti, etichette o nuove sezioni:
+     * Aggiungi le chiavi corrispondenti in `STRINGS` in `translations.py` per tutte le 5 lingue
+       (it, en, fr, de, es).
+     * Aggiorna `retranslate_ui()` in `JellyfinManager` per applicare i cambiamenti in tempo reale.
+
+5. CREDITI E ATTRIBUZIONI OBBLIGATORIE
+   - L'utente richiede esplicitamente che nella sezione Informazioni ("About") e nella documentazione
+     sia chiaramente attestato che il programma:
+     * È nato da un'idea e visione di **PsyTech76**.
+     * È stato sviluppato con intelligenza artificiale avanzata in PyQt6 / Qt 6.
+
+6. GESTIONE PLUGIN TRICKPLAY
+   - Verifica preventiva: prima di installare o sovrascrivere Trickplay, verificare sempre se il modulo
+     è già presente nel server con `is_trickplay_installed()`.
+   - Task pianificato: il task ufficiale di generazione delle miniature in Jellyfin è `RefreshTrickplayImages`
+     (`64f5f44cd30dc273cb9890205473bbcc`).
+   - Reset della libreria: per ricostruire le miniature da zero:
+     * Arrestare il task se attivo.
+     * Pulire fisicamente `config/data/trickplay/`.
+     * Eseguire `DELETE FROM TrickplayInfos;` su `jellyfin.db`.
+     * Riavviare il task di generazione.
+
+7. PRESERVAZIONE INTRO SKIPPER E ZERO IMPATTO
+   - Non rimuovere mai le funzionalità di Intro Skipper.
+   - Il timer `plugin_timer` gestisce sia Intro Skipper che Trickplay ma è attivo **SOLO** quando l'utente
+     si trova sulla scheda Plugin (Tab 5). Appena ci si sposta su un'altra scheda, il timer viene fermato.
+
+8. COMPILAZIONE APPIMAGE
+   - Lo script `scripts/build_appimage.sh` copia automaticamente tutti i file `src/*.py` in `AppDir/usr/bin/`.
+   - Assicurati che qualsiasi nuovo modulo Python creato in `src/` sia incluso nella copia.
+====================================================================================================

@@ -1,0 +1,73 @@
+====================================================================================================
+                     JELLYFIN CONTROL CENTER - GUIDA RAPIDA PER L'UTENTE
+====================================================================================================
+Versione: 2.3.0
+Ideato da: PsyTech76
+====================================================================================================
+
+1. AVVIARE L'APPLICAZIONE DAI SORGENTI
+----------------------------------------------------------------------------------------------------
+Se desideri eseguire il programma direttamente dal codice sorgente Python:
+
+A. Verifica le dipendenze:
+   pip install -r requirements.txt
+   (oppure su Arch/CachyOS: sudo pacman -S python-pyqt6 python-psutil)
+
+B. Avvia il programma:
+   python3 src/jellyfin_manager.py
+
+
+2. COMPILARE L'APPIMAGE PORTABILE (STANDALONE)
+----------------------------------------------------------------------------------------------------
+Per ricreare da zero il file eseguibile autonomo portabile .AppImage:
+
+   cd ~/jellyfin/Jellyfin_Control_Center_Project
+   ./scripts/build_appimage.sh
+
+Il pacchetto compilato verrà generato nella cartella:
+   dist/Jellyfin_Control_Center-x86_64.AppImage
+
+
+3. COME UTILIZZARE LE FUNZIONALITÀ PRINCIPALI
+----------------------------------------------------------------------------------------------------
+L'applicazione è suddivisa in 6 schede con controlli integrati e supporto multi-lingua:
+
+⚡ Scheda 1: Controllo & Dashboard
+- Stato in tempo reale del container Docker Jellyfin (In esecuzione, Arrestato, In attesa).
+- Pulsanti: Avvia, Arresta, Riavvia, Apri nel Browser.
+- Pulsante Integrazione di Sistema: aggiunge/rimuove l'app dal menu di sistema e permette il pinning al dock/taskbar.
+- Indirizzi IP di rete (locale e LAN) con pulsanti Copia.
+- Scorciatoie rapide alle cartelle multimediali del PC e log live del container.
+
+👥 Scheda 2: Dispositivi & Sessioni
+- Monitoraggio degli utenti e dispositivi connessi in streaming.
+- Distinzione tra Direct Play e Trascodifica Hardware GPU.
+- Switch istantaneo tra tabella grafica e visualizzatore terminale JSON grezzo.
+
+📊 Scheda 3: Monitor Hardware (Zero Impatto)
+- Monitoraggio a impatto zero: attivo solo quando la scheda è aperta e abilitata.
+- CPU, Memoria RAM, container Docker e telemetria avanzata GPU (NVIDIA / AMD / Intel: VRAM, Temp, Watt, Clock).
+
+📦 Scheda 4: Gestione Installazione
+- Riconoscimento automatico della distribuzione (Arch, Debian, Ubuntu, Fedora, openSUSE).
+- Installazione/rimozione guidata di Docker e GPU Toolkit con password sicura.
+
+💾 Scheda 5: Backup & Ripristino (.zip)
+- Archiviazione compressa .zip con opzione di esclusione metadata per backup ultrarapidi.
+- Monitoraggio streaming con ETA, MB/s e cancellazione atomica senza residui se annullato.
+
+🔌 Scheda 6: Gestione Plugin (Intro Skipper & Trickplay)
+- Sottoscheda Intro Skipper: installazione, rimozione, avvio/arresto analisi, statistiche e log live.
+- Sottoscheda Trickplay:
+  * Verifica preventiva se Trickplay è già presente nel server prima di installare.
+  * Monitoraggio dello stato del generatore di miniature (In esecuzione / Inattivo).
+  * Pulsanti Start / Stop per avviare o bloccare la generazione delle miniature.
+  * Reset e Ricostruzione della libreria da zero con pulizia file e riavvio.
+  * Pulsante per aprire direttamente la configurazione Trickplay nel browser.
+  * Statistiche e log live specifici per Trickplay.
+
+ℹ️ Sezione Info & 📖 Guida HTML
+- Pulsanti nella barra superiore per visualizzare i crediti del progetto (PsyTech76) e aprire la guida
+  completa formattata in HTML in una finestra separata.
+- Selettore lingua a 5 lingue (Italiano, Inglese, Francese, Tedesco, Spagnolo) con rilevamento automatico.
+====================================================================================================
