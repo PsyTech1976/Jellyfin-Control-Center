@@ -17,7 +17,9 @@ env/
 
 # Build and Packaging temporary artifacts
 build_tmp/
+bin/
 *.spec
+.github_status.json
 
 # Exclude standalone distribution AppImage binaries from git repo
 # (Note: Releases are published via GitHub Releases)
