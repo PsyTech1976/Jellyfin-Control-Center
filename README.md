@@ -45,6 +45,37 @@
 
 ---
 
+### 📸 Anteprime dell'Applicazione (Screenshot)
+
+> [!NOTE]
+> Per garantire la massima riservatezza e conformità alla privacy, tutti i dati sensibili (indirizzi IP di rete locale, nomi utente e percorsi dei file multimediali) sono stati offuscati/sfocati.
+
+#### 1. Dashboard & Controllo Servizio
+*Monitoraggio dello stato del server Jellyfin (Nativo o Docker), avvio/arresto/riavvio, URL locale e abilitazione come app di sistema con un clic.*
+![Dashboard e Controllo](docs/screenshots/it/01_dashboard.png)
+
+#### 2. Dispositivi & Sessioni Attive
+*Rilevamento in tempo reale delle sessioni di streaming, client connessi, titoli in riproduzione e codec di transcodifica.*
+![Dispositivi e Sessioni](docs/screenshots/it/02_sessioni.png)
+
+#### 3. Monitor Hardware a Impatto Zero
+*Telemetria istantanea per CPU, RAM e GPU (NVIDIA / AMD / Intel), attiva solo a scheda visibile.*
+![Monitoraggio Hardware](docs/screenshots/it/03_hardware.png)
+
+#### 4. Gestione Plugin: Intro Skipper
+*Installazione con un clic, indicizzazione delle intro dei media, avanzamento e log temporizzato dei file elaborati.*
+![Plugin Intro Skipper](docs/screenshots/it/04_intro_skipper.png)
+
+#### 5. Gestione Plugin: Trickplay
+*Generazione fotogrammi BIF/Trickplay, monitoraggio del task di background, ricostruzione libreria e link diretto alla configurazione web.*
+![Plugin Trickplay](docs/screenshots/it/05_trickplay.png)
+
+#### 6. Guida Utente HTML Integrata
+*Finestra separata con il manuale multilingua completo per consultare il funzionamento di ogni opzione del programma.*
+![Guida Utente HTML](docs/screenshots/it/06_guida_html.png)
+
+---
+
 ### 🚀 Come Avviare l'Applicazione
 
 #### Opzione 1: AppImage Autonoma (Consigliata)
@@ -94,6 +125,37 @@ python3 src/jellyfin_manager.py
    - Italian, English, French, German, and Spanish. Auto-detects OS locale with English fallback and live runtime switcher.
 10. **📖 Integrated HTML User Guide:**
     - Dedicated standalone documentation window detailing every control and workflow.
+
+---
+
+### 📸 Application Previews (Screenshots)
+
+> [!NOTE]
+> To preserve privacy and security, all sensitive information (LAN IP addresses, user account names, and media file paths) has been blurred.
+
+#### 1. Dashboard & Service Control
+*Real-time server state (Native or Docker), service start/stop/restart, LAN access URL, and one-click XDG desktop integration.*
+![Dashboard and Control](docs/screenshots/en/01_dashboard.png)
+
+#### 2. Devices & Live Sessions
+*Live tracking of active streaming sessions, connected client devices, current playback titles, and transcode codecs.*
+![Devices and Sessions](docs/screenshots/en/02_sessions.png)
+
+#### 3. Zero-Impact Hardware Monitor
+*Instant telemetry gauges for CPU, RAM, and GPU load (NVIDIA / AMD / Intel), active only while the tab is open.*
+![Hardware Monitor](docs/screenshots/en/03_hardware.png)
+
+#### 4. Plugin Management: Intro Skipper
+*One-click installation, intro indexing trigger, real-time file counters, and timestamped progress log.*
+![Intro Skipper Plugin](docs/screenshots/en/04_intro_skipper.png)
+
+#### 5. Plugin Management: Trickplay
+*BIF/Trickplay frame generation, live background task tracking, clean library rebuild, and direct web config access.*
+![Trickplay Plugin](docs/screenshots/en/05_trickplay.png)
+
+#### 6. Integrated HTML User Guide
+*Standalone multilingual user manual window explaining each control and workflow within the interface.*
+![HTML User Guide](docs/screenshots/en/06_html_guide.png)
 
 ---
 
